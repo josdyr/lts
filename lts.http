@@ -1,0 +1,6 @@
+@lts_HostAddress = http://localhost:5052
+
+GET {{lts_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

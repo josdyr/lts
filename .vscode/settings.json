@@ -1,0 +1,5 @@
+{
+  "appService.preDeployTask": "publish-release",
+  "appService.deploySubpath": "bin/Release/net8.0/publish",
+  "appService.defaultWebAppToDeploy": "undefined/subscriptions/fec0b71a-afb9-42f1-ae23-ec71a837692d/resourceGroups/rg-lts/providers/Microsoft.Web/sites/app-lts"
+}
