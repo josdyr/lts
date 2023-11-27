@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
-class LtsDbContext : DbContext
+class ApplicationDbContext : DbContext
 {
-    public LtsDbContext(DbContextOptions<LtsDbContext> options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
     public DbSet<Object> Objects => Set<Object>();
