@@ -10,4 +10,4 @@ Add DTO
 
 https://github.com/dotnet/Scaffolding/issues/1884:
 dotnet-aspnet-codegenerator minimalapi -m FooModel -e EndPointsClass -outDir "Foo" --endpointsNamespace "TestNS"
-dotnet aspnet-codegenerator minimalapi -m Object -e ObjectEndpoints -outDir "Models" --endpointsNamespace "ObjectEndpoints"
+dotnet aspnet-codegenerator minimalapi -m TeslaCar -e TeslaCarEndpoints -outDir "Models" --endpointsNamespace "TeslaCarEndpoints"

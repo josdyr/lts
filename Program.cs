@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Learn more at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseInMemoryDatabase("ObjectList"));
+builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseInMemoryDatabase("TeslaCarList"));
 // builder.Services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
