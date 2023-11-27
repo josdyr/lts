@@ -1,5 +1,7 @@
 # notes:
 
+https://learn.microsoft.com/en-us/azure/azure-sql/database/azure-sql-dotnet-entity-framework-core-quickstart?view=azuresql&tabs=visual-studio%2Cazure-portal%2Cazure-cli#deploy-to-azure-app-service
+
 https://www.youtube.com/watch?v=32iBQvIZQxU
 scaffold CRUD method endpoints from model
 
