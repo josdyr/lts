@@ -1,40 +1,75 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.OpenApi;
+using lts.Models;
+using System.Threading.Tasks.Dataflow;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+
 namespace lts.Models;
 
 public static class TeslaCarEndpoints
 {
     public static void MapTeslaCarEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/TeslaCar");
+        var group = routes.MapGroup("/api/TeslaCar").WithTags(nameof(TeslaCar));
 
-        group.MapGet("/", () =>
+        group.MapGet("/", async (ApplicationDbContext db) =>
         {
-            return new[] { new TeslaCar() };
+            return await db.TeslaCars.ToListAsync();
         })
-        .WithName("GetAllTeslaCars");
+        .WithName("GetAllTeslaCars")
+        .WithOpenApi();
 
-        group.MapGet("/{id}", (int id) =>
+        group.MapGet("/{id}", async Task<Results<Ok<TeslaCar>, NotFound>> (int id, ApplicationDbContext db) =>
         {
-            return new TeslaCar { Id = id };
+            return await db.TeslaCars.FindAsync(id)
+                is TeslaCar model
+                    ? TypedResults.Ok(model)
+                    : TypedResults.NotFound();
         })
-        .WithName("GetTeslaCarById");
+        .WithName("GetTeslaCarById")
+        .WithOpenApi();
 
-        group.MapPut("/{id}", (int id, TeslaCar input) =>
+        group.MapPut("/{id}", async Task<Results<NotFound, NoContent>> (int id, TeslaCar car, ApplicationDbContext db) =>
         {
+            var foundModel = await db.TeslaCars.FindAsync(id);
+
+            if (foundModel is null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            foundModel.Model = car.Model;
+            foundModel.SerialNumber = car.SerialNumber;
+            foundModel.Location = car.Location;
+            await db.SaveChangesAsync();
+
             return TypedResults.NoContent();
         })
-        .WithName("UpdateTeslaCar");
+        .WithName("UpdateTeslaCar")
+        .WithOpenApi();
 
-        group.MapPost("/", (TeslaCar model) =>
+        group.MapPost("/", async (TeslaCar car, ApplicationDbContext db) =>
         {
-            return TypedResults.Created($"/api/TeslaCars/{model.Id}", model);
+            db.TeslaCars.Add(car);
+            await db.SaveChangesAsync();
+            return TypedResults.Created($"/api/TeslaCar/{car.Id}", car);
         })
-        .WithName("CreateTeslaCar");
+        .WithName("CreateTeslaCar")
+        .WithOpenApi();
 
-        group.MapDelete("/{id}", (int id) =>
+        group.MapDelete("/{id}", async Task<Results<Ok<TeslaCar>, NotFound>> (int id, ApplicationDbContext db) =>
         {
-            return TypedResults.Ok(new TeslaCar { Id = id });
+            if (await db.TeslaCars.FindAsync(id) is TeslaCar car)
+            {
+                db.TeslaCars.Remove(car);
+                await db.SaveChangesAsync();
+                return TypedResults.Ok(car);
+            }
+
+            return TypedResults.NotFound();
         })
-        .WithName("DeleteTeslaCar");
+        .WithName("DeleteTeslaCar")
+        .WithOpenApi();
     }
 }
