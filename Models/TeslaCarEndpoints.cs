@@ -51,6 +51,12 @@ public static class TeslaCarEndpoints
 
         group.MapPost("/", async (TeslaCar car, ApplicationDbContext db) =>
         {
+            // validate the model
+            // if (!car.IsValid)
+            // {
+            //     // return TypedResults.BadRequest("Model is required");
+            //     return null;
+            // }
             db.TeslaCars.Add(car);
             await db.SaveChangesAsync();
             return TypedResults.Created($"/api/TeslaCar/{car.Id}", car);
