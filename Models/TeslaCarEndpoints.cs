@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.OpenApi;
 using lts.Models;
 using System.Threading.Tasks.Dataflow;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using System.Text.RegularExpressions;
 
 namespace lts.Models;
 
@@ -51,12 +52,13 @@ public static class TeslaCarEndpoints
 
         group.MapPost("/", async (TeslaCar car, ApplicationDbContext db) =>
         {
-            // validate the model
-            // if (!car.IsValid)
-            // {
-            //     // return TypedResults.BadRequest("Model is required");
-            //     return null;
-            // }
+            string pattern = @"^(TS-|T3-|TX-|TY-|TC-)\d{5}-[A-Za-z]{2}$";
+            bool isValid = Regex.IsMatch(car.SerialNumber, pattern);
+            if (isValid is false)
+            {
+                return Results.BadRequest("Serial number is not valid");
+            }
+
             db.TeslaCars.Add(car);
             await db.SaveChangesAsync();
             return TypedResults.Created($"/api/TeslaCar/{car.Id}", car);
