@@ -56,7 +56,7 @@ public static class TeslaCarEndpoints
             bool isValid = Regex.IsMatch(car.SerialNumber, pattern);
             if (isValid is false)
             {
-                return Results.BadRequest("Serial number is not valid");
+                return Results.BadRequest("Serial number is not valid. Correct format could be: TC-00001-RG");
             }
 
             db.TeslaCars.Add(car);
