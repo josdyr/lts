@@ -10,12 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("https://app-lts.azurewebsites.net")
-                                                  .AllowAnyHeader()
-                                                  .AllowAnyMethod();
-                      });
+        policy =>
+        {
+            policy.WithOrigins("https://app-lts.azurewebsites.net")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -34,5 +34,6 @@ app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
 
 app.MapTeslaCarEndpoints();
+app.MapCityCodeEndpoints();
 
 app.Run();

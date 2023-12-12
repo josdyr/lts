@@ -6,4 +6,5 @@ class ApplicationDbContext : DbContext
         : base(options) { }
 
     public DbSet<TeslaCar> TeslaCars => Set<TeslaCar>();
+    public DbSet<CityCode> CityCodes => Set<CityCode>();
 }
