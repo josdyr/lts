@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Tesla;
 
 class ApplicationDbContext : DbContext
 {

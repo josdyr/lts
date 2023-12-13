@@ -1,8 +1,9 @@
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-public class CityCode
+namespace Tesla
 {
-    public int Id { get; set; }
-    public string? Code { get; set; }
-    public string? City { get; set; }
+    public class CityCode
+    {
+        public int Id { get; set; }
+        public string? Code { get; set; }
+        public string? City { get; set; }
+    }
 }
