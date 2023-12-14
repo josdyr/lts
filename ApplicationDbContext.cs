@@ -8,4 +8,5 @@ class ApplicationDbContext : DbContext
 
     public DbSet<TeslaCar> TeslaCars => Set<TeslaCar>();
     public DbSet<CityCode> CityCodes => Set<CityCode>();
+    public DbSet<Comment> Comment => Set<Comment>();
 }

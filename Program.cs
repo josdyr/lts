@@ -35,5 +35,6 @@ app.UseCors(MyAllowSpecificOrigins);
 
 app.MapTeslaCarEndpoints();
 app.MapCityCodeEndpoints();
+app.MapCommentEndpoints();
 
 app.Run();
