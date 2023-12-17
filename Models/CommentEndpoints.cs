@@ -26,5 +26,47 @@ public static class CommentEndpoints
         })
         .WithName("GetCommentById")
         .WithOpenApi();
+
+        group.MapPut("/{id}", async Task<Results<NotFound, NoContent>> (int id, Comment comment, ApplicationDbContext db) =>
+        {
+            var foundModel = await db.Comment.FindAsync(id);
+
+            if (foundModel is null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            foundModel.CarId = comment.CarId;
+            foundModel.CommentDescription = comment.CommentDescription;
+            foundModel.User = comment.User;
+            await db.SaveChangesAsync();
+
+            return TypedResults.NoContent();
+        })
+        .WithName("UpdateComment")
+        .WithOpenApi();
+
+        group.MapPost("/", async (Comment comment, ApplicationDbContext db) =>
+        {
+            db.Comment.Add(comment);
+            await db.SaveChangesAsync();
+            return TypedResults.Created($"/api/comment/{comment.Id}", comment);
+        })
+        .WithName("CreateComment")
+        .WithOpenApi();
+
+        group.MapDelete("/{id}", async Task<Results<Ok<Comment>, NotFound>> (int id, ApplicationDbContext db) =>
+        {
+            if (await db.Comment.FindAsync(id) is Comment comment)
+            {
+                db.Comment.Remove(comment);
+                await db.SaveChangesAsync();
+                return TypedResults.Ok(comment);
+            }
+
+            return TypedResults.NotFound();
+        })
+        .WithName("DeleteComment")
+        .WithOpenApi();
     }
 }
