@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore.SqlServer;
+using Azure.Messaging.WebPubSub;
 using lts.Models;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";

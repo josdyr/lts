@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Azure.Messaging.WebPubSub;
+using Newtonsoft.Json;
 using Tesla;
 
 namespace lts.Models;
@@ -48,8 +50,18 @@ public static class CommentEndpoints
 
         group.MapPost("/", async (Comment comment, ApplicationDbContext db) =>
         {
+            string serializedComment = JsonConvert.SerializeObject(comment);
+            Console.WriteLine(serializedComment);
             db.Comment.Add(comment);
             await db.SaveChangesAsync();
+
+            var connectionString = "Endpoint=https://wps-communication.webpubsub.azure.com;AccessKey=uAwDEt4WQXFXaXSEWqKIwkZLIqZNnhjNeTOjE+WHYLY=;Version=1.0;";
+            var hub = "Hub";
+
+            // Either generate the token or fetch it from server or fetch a temp one from the portal
+            var serviceClient = new WebPubSubServiceClient(connectionString, hub);
+            await serviceClient.SendToAllAsync(serializedComment);
+
             return TypedResults.Created($"/api/comment/{comment.Id}", comment);
         })
         .WithName("CreateComment")
