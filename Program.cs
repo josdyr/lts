@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Azure.Messaging.WebPubSub;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using lts.Models;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -22,7 +24,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Learn more at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
+var keyVaultUrl = builder.Configuration["AzureKeyVault:VaultUrl"];
+var credential = new DefaultAzureCredential();
+var client = new SecretClient(new Uri(keyVaultUrl), credential);
+var secret = client.GetSecret("ConnectionStringSecretName");
+var connectionString = secret.Value.Value;
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
