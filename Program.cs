@@ -16,10 +16,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyCorsPolicy", builder =>
     {
-        builder.WithOrigins("https://app-lts-app.azurewebsites.net", "https://maps.googleapis.com", "https://data.ssb.no/api/v0/no/table/07459/")
+        builder.WithOrigins("https://app-lts-app.azurewebsites.net")
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowAnyOrigin();
+            .AllowAnyMethod();
     });
 });
 
