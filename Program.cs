@@ -6,23 +6,21 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using lts.Models;
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-        policy =>
-        {
-            policy.WithOrigins("https://app-lts.azurewebsites.net")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
-});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Learn more at https://aka.ms/aspnetcore/swashbuckle
+
+// Add CORS services
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyCorsPolicy", builder =>
+    {
+        builder.WithOrigins("https://app-lts-app.azurewebsites.net")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var keyVaultUrl = builder.Configuration["AzureKeyVault:VaultUrl"];
 var credential = new DefaultAzureCredential();
@@ -40,10 +38,10 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-app.UseCors(MyAllowSpecificOrigins);
-
 app.MapTeslaCarEndpoints();
 app.MapCityCodeEndpoints();
 app.MapCommentEndpoints();
+
+app.UseCors("MyCorsPolicy");
 
 app.Run();
