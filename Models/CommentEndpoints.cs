@@ -55,7 +55,7 @@ public static class CommentEndpoints
             db.Comment.Add(comment);
             await db.SaveChangesAsync();
 
-            var connectionString = "Endpoint=https://wps-communication.webpubsub.azure.com;AccessKey=uAwDEt4WQXFXaXSEWqKIwkZLIqZNnhjNeTOjE+WHYLY=;Version=1.0;";
+            var connectionString = Environment.GetEnvironmentVariable("AzureWebPubSubConnectionString");
             var hub = "Hub";
 
             // Either generate the token or fetch it from server or fetch a temp one from the portal
