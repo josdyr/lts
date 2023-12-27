@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Azure.Messaging.WebPubSub;
 using System.Text.RegularExpressions;
 using Tesla;
+using Newtonsoft.Json;
 
 namespace lts.Models;
 
@@ -55,9 +57,19 @@ public static class TeslaCarEndpoints
             {
                 return Results.BadRequest("Serial number is not valid. Correct format could be: TC-00001-RG");
             }
+            string serializedCar = JsonConvert.SerializeObject(car);
+            Console.WriteLine(serializedCar);
 
             db.TeslaCars.Add(car);
             await db.SaveChangesAsync();
+
+            var connectionString = "Endpoint=https://wps-communication.webpubsub.azure.com;AccessKey=uAwDEt4WQXFXaXSEWqKIwkZLIqZNnhjNeTOjE+WHYLY=;Version=1.0;";
+            var hub = "Hub";
+
+            // Either generate the token or fetch it from server or fetch a temp one from the portal
+            var serviceClient = new WebPubSubServiceClient(connectionString, hub);
+            await serviceClient.SendToAllAsync(serializedCar);
+
             return TypedResults.Created($"/api/TeslaCar/{car.Id}", car);
         })
         .WithName("CreateTeslaCar")
