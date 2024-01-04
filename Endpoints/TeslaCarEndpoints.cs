@@ -66,13 +66,26 @@ public static class TeslaCarEndpoints
             var connectionString = Environment.GetEnvironmentVariable("AzureWebPubSubConnectionString");
             var hub = "Hub";
 
-            // Either generate the token or fetch it from server or fetch a temp one from the portal
             var serviceClient = new WebPubSubServiceClient(connectionString, hub);
             await serviceClient.SendToAllAsync(serializedCar);
 
             return TypedResults.Created($"/api/TeslaCar/{car.Id}", car);
         })
         .WithName("CreateTeslaCar")
+        .WithOpenApi();
+
+        group.MapGet("/GetPubSubAccessToken", async (ApplicationDbContext db) =>
+        {
+            var connectionString = Environment.GetEnvironmentVariable("AzureWebPubSubConnectionString");
+            var hub = "Hub";
+
+            var serviceClient = new WebPubSubServiceClient(connectionString, hub);
+            var uri = await serviceClient.GetClientAccessUriAsync(new TimeSpan(24, 0, 0));
+            var token = new { token = uri };
+
+            return token;
+        })
+        .WithName("GetPubSubAccessToken")
         .WithOpenApi();
 
         group.MapDelete("/{id}", async Task<Results<Ok<TeslaCar>, NotFound>> (int id, ApplicationDbContext db) =>
